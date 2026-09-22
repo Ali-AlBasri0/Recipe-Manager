@@ -141,17 +141,19 @@ with st.expander("Random recipe", icon="🎲"):
 
         one_row_random_api = pd.DataFrame({"recipe_name": [random_with_api["strMeal"].iloc[0]],"ingredients_separated_by_commas": [", ".join(temp_ingredient)],"Cooking_instructions": [random_with_api["strInstructions"].iloc[0]],"Category": [random_with_api["strCategory"].iloc[0]],"Servings":1})
         st.session_state.one_row_random_api = one_row_random_api
+        st.session_state.one_row_random_api_thumb = random_with_api["strMealThumb"].iloc[0]
 
     if "one_row_random_api" in st.session_state:
         st.table(st.session_state.one_row_random_api)
-        st.image(random_with_api["strMealThumb"].iloc[0], width=200)
+        st.image(st.session_state.one_row_random_api_thumb, width=200)
 
         
         if st.button("add to my DB"):
             recipe = pd.concat([recipe,st.session_state.one_row_random_api],ignore_index=True,)
             recipe.to_csv("recipe.csv", index=False)
             st.success("adedd!")
-            del st.session_state["one_row_random_api"]           
+            del st.session_state["one_row_random_api"]
+            del st.session_state["one_row_random_api_thumb"]           
 #________________________________________________________________________________________
 
 
@@ -283,7 +285,7 @@ with st.expander("Ai",icon="👨‍🍳"):
         if recipe_name:
             selected_recipe = recipe[recipe["recipe_name"] == recipe_name]
             st.table(selected_recipe)
-            recipe_row_str = "Treat this—including all its associated information—accordingly, rather than as a data array. "+ selected_recipe.to_string()
+            recipe_row_str = "Treat this—including all its associated information—accordingly, rather than as a data array. "+ selected_recipe.to_string() + 'i want the output tobe is info not data'
 
 
     client = OpenAI(base_url="https://openrouter.ai/api/v1",api_key = secrets)
