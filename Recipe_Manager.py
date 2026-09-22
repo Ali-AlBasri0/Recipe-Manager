@@ -5,8 +5,7 @@ import requests
 from openai import OpenAI
 from dotenv import dotenv_values
 
-secrets = dotenv_values(".env")
-
+secrets = st.secrets["my_api"]
 
 st.set_page_config(
     page_title="Recipe Collection",
@@ -289,7 +288,7 @@ with st.expander("Ai",icon="👨‍🍳"):
             recipe_row_str = "Treat this—including all its associated information—accordingly, rather than as a data array. "+ selected_recipe.to_string()
 
 
-    client = OpenAI(base_url="https://openrouter.ai/api/v1",api_key = secrets["my_api"])
+    client = OpenAI(base_url="https://openrouter.ai/api/v1",api_key = secrets)
 
     def get_llm_response(prompt):
         completion = client.chat.completions.create(
