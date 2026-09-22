@@ -159,43 +159,41 @@ with st.expander("Random recipe", icon="🎲"):
 #choice recipe
 with st.expander("choice recipe", icon="📖"):
     recipe_name = st.selectbox("Select a recipe :", options=recipe["recipe_name"].dropna().unique())
+
     if recipe_name:
         selected_recipe = recipe[recipe["recipe_name"] == recipe_name]
         st.table(selected_recipe)
 
-#calculate ingredients based on people number
-    people_N = st.number_input("Enter the number of people:", min_value=1, step=1)
-    people_NNN = people_N/selected_recipe["Servings"].values[0]  
-    if people_N:
-        for index, row in selected_recipe.iterrows():
-            ingredients = row["ingredients_separated_by_commas"].split(",")
-            ingredients = [i.strip() for i in ingredients]
-            scaled_ingredients = [f"{round(people_NNN, 2)} x {ingredient}" for ingredient in ingredients]
-            st.write("Ingredients needed for", people_N, "people:")
-            st.write(", ".join(scaled_ingredients))
+        people_N = st.number_input("Enter the number of people:", min_value=1, step=1)
+        people_NNN = people_N / selected_recipe["Servings"].values[0]
+        if people_N:
+            for index, row in selected_recipe.iterrows():
+                ingredients = [i.strip() for i in row["ingredients_separated_by_commas"].split(",")]
+                scaled_ingredients = [f"{round(people_NNN, 2)} x {ingredient}" for ingredient in ingredients]
+                st.write("Ingredients needed for", people_N, "people:")
+                st.write(", ".join(scaled_ingredients))
 
-    #button to update the last cooked date usinge concat function
-    if st.button("Update Last Cooked Date"):
-        new_recipe = recipe.drop(selected_recipe.index)
-        selected_recipe["Last_Cooked"] = dt.datetime.now().strftime("%Y-%m-%d")
-        recipe = pd.concat([new_recipe, selected_recipe], ignore_index=True)
-        recipe.to_csv("recipe.csv", index=False)
-        st.success("added the last cooked date")
-        st.rerun()
-        
-    #add rating = st.feedback on the selected recipe if its hase been cooked before
-    rating = st.feedback("stars")
-
-    if st.button("Add Rating"):
-        if rating  is None:
-            st.warning("Please select a rating before adding it.", icon="⚠️")
-        else:
+        if st.button("Update Last Cooked Date"):
             new_recipe = recipe.drop(selected_recipe.index)
-            selected_recipe["Rating"] = rating + 1
+            selected_recipe["Last_Cooked"] = dt.datetime.now().strftime("%Y-%m-%d")
             recipe = pd.concat([new_recipe, selected_recipe], ignore_index=True)
             recipe.to_csv("recipe.csv", index=False)
-            st.success("Rating added successfully!") # idk why its not working / work for less than 1 second 
+            st.success("added the last cooked date")
             st.rerun()
+
+        rating = st.feedback("stars")
+        if st.button("Add Rating"):
+            if rating is None:
+                st.warning("Please select a rating before adding it.", icon="⚠️")
+            else:
+                new_recipe = recipe.drop(selected_recipe.index)
+                selected_recipe["Rating"] = rating + 1
+                recipe = pd.concat([new_recipe, selected_recipe], ignore_index=True)
+                recipe.to_csv("recipe.csv", index=False)
+                st.success("Rating added successfully!")
+                st.rerun()
+    else:
+        st.info("No recipes yet — add one above first.")
 #________________________________________________________________________________________
 
 
