@@ -2,6 +2,8 @@
 
 A simple **Streamlit recipe manager** for storing, searching, and managing recipes.
 
+🔗 **Live app:** [recipe-manager-idk.streamlit.app](https://recipe-manager-idk.streamlit.app/)
+
 ## Features
 
 - ➕ Add and manage recipes
